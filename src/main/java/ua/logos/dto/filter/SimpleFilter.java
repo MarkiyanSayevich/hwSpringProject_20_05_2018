@@ -12,4 +12,8 @@ public class SimpleFilter {
 	private String email;
 	
 	private String login;
+	
+	private Integer minSalary;
+	
+	private Integer maxSalary;
 }

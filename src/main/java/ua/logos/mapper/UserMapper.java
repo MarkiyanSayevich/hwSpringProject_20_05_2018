@@ -32,6 +32,7 @@ public interface UserMapper {
 			userForList.setLastName(users.get(i).getLastName());
 			userForList.setLogin(users.get(i).getLogin());
 			userForList.setEmail(users.get(i).getEmail());
+			userForList.setSalary(users.get(i).getSalary());
 			usersDtoForList.add(userForList);
 		}
 		

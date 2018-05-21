@@ -14,5 +14,7 @@ public class UserDtoForList {
 	private String email;
 	
 	private String login;
+	
+	private int salary;
 }
 

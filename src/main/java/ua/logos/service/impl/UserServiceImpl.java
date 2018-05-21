@@ -54,6 +54,8 @@ public class UserServiceImpl implements UserService{
 				Predicate lnPredicate = null;
 				Predicate emailPredicate = null;
 				Predicate loginPredicate = null;
+				Predicate maxSalaryPredicate = null;
+				Predicate minSalaryPredicate = null;
 				
 				List<Predicate> predicates = new ArrayList<>();
 				
@@ -72,6 +74,49 @@ public class UserServiceImpl implements UserService{
 				if(!filter.getLogin().isEmpty()) {
 					loginPredicate = cb.like(root.get("login"), "%" + filter.getLogin() + "%");
 					predicates.add(loginPredicate);
+				}
+				
+//				if(!filter.getMaxSalary().equals(null) && !filter.getMinSalary().equals(null)) {
+//					maxSalaryPredicate = cb.lessThanOrEqualTo(root.get("salary"), filter.getMaxSalary());
+//					minSalaryPredicate = cb.greaterThanOrEqualTo(root.get("salary"), filter.getMinSalary());
+//					predicates.add(maxSalaryPredicate);
+//					predicates.add(minSalaryPredicate);
+//				} else if (filter.getMaxSalary().equals(null) && !filter.getMinSalary().equals(null)) {
+//					minSalaryPredicate = cb.greaterThanOrEqualTo(root.get("salary"), filter.getMinSalary());
+//					predicates.add(minSalaryPredicate);
+//				} else {
+//					maxSalaryPredicate = cb.lessThanOrEqualTo(root.get("salary"), filter.getMaxSalary());
+//					predicates.add(maxSalaryPredicate);
+//				}
+				
+//				if(!Integer.toString(filter.getMinSalary()).isEmpty() && !Integer.toString(filter.getMaxSalary()).isEmpty()) {
+//					maxSalaryPredicate = cb.lessThanOrEqualTo(root.get("salary"), filter.getMaxSalary());
+//					minSalaryPredicate = cb.greaterThanOrEqualTo(root.get("salary"), filter.getMinSalary());
+//					predicates.add(maxSalaryPredicate);
+//					predicates.add(minSalaryPredicate);
+//				} else if (!Integer.toString(filter.getMinSalary()).isEmpty() && Integer.toString(filter.getMaxSalary()).isEmpty()) {
+//					minSalaryPredicate = cb.greaterThanOrEqualTo(root.get("salary"), filter.getMinSalary());
+//					predicates.add(minSalaryPredicate);
+//				} else if (Integer.toString(filter.getMinSalary()).isEmpty() && !Integer.toString(filter.getMaxSalary()).isEmpty()) {
+//					maxSalaryPredicate = cb.lessThanOrEqualTo(root.get("salary"), filter.getMaxSalary());
+//					predicates.add(maxSalaryPredicate);
+//				}
+				
+				
+				if(!filter.getMinSalary().equals(null)) {
+					minSalaryPredicate = cb.greaterThanOrEqualTo(root.get("salary"), filter.getMinSalary());
+					predicates.add(minSalaryPredicate);
+				} else if (filter.getMinSalary().equals(null)){
+					minSalaryPredicate = cb.greaterThanOrEqualTo(root.get("salary"), 0);
+					predicates.add(minSalaryPredicate);
+				}
+				
+				if(!filter.getMaxSalary().equals(null)) {
+					maxSalaryPredicate = cb.lessThanOrEqualTo(root.get("salary"), filter.getMaxSalary());
+					predicates.add(maxSalaryPredicate);
+				} else if(filter.getMaxSalary().equals(null)) {
+					maxSalaryPredicate = cb.lessThanOrEqualTo(root.get("salary"), 1000000);
+					predicates.add(maxSalaryPredicate);
 				}
 				return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 			}

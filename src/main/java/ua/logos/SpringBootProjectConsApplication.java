@@ -81,8 +81,9 @@ public class SpringBootProjectConsApplication extends SpringBootServletInitializ
 					user.setEmail(user.getFirstName() + user.getLastName() + "@gmail.com");
 					user.setLogin(user.getFirstName() + user.getLastName() + Integer.toString(new Random().nextInt(100000)));
 					user.setPassword(Integer.toString(new Random().nextInt(1000))+ user.getLastName() + user.getFirstName() + Integer.toString(new Random().nextInt(1000)));
+					user.setSalary((new Random().nextInt(10)*1000) + (new Random().nextInt(10)*100) + (new Random().nextInt(10)*10));
 					userRepository.save(user);
-				}
+				} 
 				
 			} catch (FileNotFoundException fnfe) {
 				System.err.println("File: " + firstNameFile + " not found.");
