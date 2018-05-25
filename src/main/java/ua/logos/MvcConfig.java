@@ -25,31 +25,31 @@ public class MvcConfig implements WebMvcConfigurer{
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 	}
 
-//	@Override
-//	public void configureViewResolvers(ViewResolverRegistry registry) {
-//		registry.jsp("/WEB-INF/views/",".jsp").viewClass(JstlView.class);
-//	}
+	@Override
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+		registry.jsp("/WEB-INF/views/",".jsp").viewClass(JstlView.class);
+	}
 	
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addFormatter(new MakeFormatter());
 	}
 	
-	@Bean
-	public TilesConfigurer tilesConfigurer() {
-		TilesConfigurer configurer = new TilesConfigurer();
-		configurer.setDefinitions(new String[] {"/WEB-INF/tiles/tiles.xml"});
-		configurer.setCheckRefresh(true);
-		configurer.setUseMutableTilesContainer(true);
-		
-		return configurer;
-	}
-	
-	@Bean
-	public TilesViewResolver viewResolver() {
-		TilesViewResolver viewResolver = new TilesViewResolver();
-		viewResolver.setViewClass(TilesView.class);
-		
-		return viewResolver;
-	}
+//	@Bean
+//	public TilesConfigurer tilesConfigurer() {
+//		TilesConfigurer configurer = new TilesConfigurer();
+//		configurer.setDefinitions(new String[] {"/WEB-INF/tiles/tiles.xml"});
+//		configurer.setCheckRefresh(true);
+//		configurer.setUseMutableTilesContainer(true);
+//		
+//		return configurer;
+//	}
+//	
+//	@Bean
+//	public TilesViewResolver viewResolver() {
+//		TilesViewResolver viewResolver = new TilesViewResolver();
+//		viewResolver.setViewClass(TilesView.class);
+//		
+//		return viewResolver;
+//	}
 }

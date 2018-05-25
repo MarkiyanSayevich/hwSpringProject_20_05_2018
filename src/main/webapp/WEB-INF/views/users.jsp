@@ -1,20 +1,30 @@
-<%@ include file="/WEB-INF/taglib.jsp" %>
-	
-	<form:form action="/users/filter" method="GET" modelAttribute="filterModel">
-		First Name: <form:input path="firstName"/> 
-		Last Name: <form:input path="lastName"/> 
-		Email: <form:input path="email"/>
-		Login: <form:input path="login"/><br>
-		
-		Min Salary: <form:input path="minSalary"/>
-		Max Salary: <form:input path="maxSalary"/>
-		<button type="submit">Search</button>
-	</form:form>
+<%@ include file="/WEB-INF/taglib.jsp"%>
 
-	<ul>
-		<c:forEach items="${ userDtoListModel }" var="user">
-			<li>
-				${ user.id } | ${ user.firstName } | ${ user.lastName } | ${ user.email } | ${ user.login } | ${ user.salary }
-			</li>
-		</c:forEach>
-	</ul>
+<div class="container">
+	<div class="row">
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Email</th>
+					<th>Login</th>
+					<th>Salary</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach items="${ userListByPage }" var="user">
+					<tr>
+						<td>${ user.id }</td>
+						<td>${ user.firstName }</td>
+						<td>${ user.lastName }</td>
+						<td>${ user.email }</td>
+						<td>${ user.login }</td>
+						<td>${ user.salary }</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
+</div>
