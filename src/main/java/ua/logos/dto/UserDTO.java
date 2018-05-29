@@ -4,8 +4,10 @@ import javax.validation.constraints.NotEmpty;
 
 import lombok.Data;
 import ua.logos.validator.CheckIfUserExists;
+import ua.logos.validator.CheckPassword;
 
 @Data
+@CheckPassword(message = "Check password confirm")
 public class UserDTO {
 
 	@NotEmpty(message = " - First Name cannot be empty - ")

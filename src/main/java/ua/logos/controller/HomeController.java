@@ -11,8 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import ua.logos.dto.UserDTO;
@@ -20,32 +23,39 @@ import ua.logos.dto.UserDtoForList;
 import ua.logos.dto.filter.SimpleFilter;
 import ua.logos.entity.Make;
 import ua.logos.entity.User;
+import ua.logos.entity.UserInfo;
 import ua.logos.entity.enums.BodyType;
 import ua.logos.entity.enums.FuelType;
+import ua.logos.repository.UserInfoRepository;
 import ua.logos.repository.UserRepository;
 import ua.logos.service.MakeService;
 import ua.logos.service.ModelService;
+import ua.logos.service.UserInfoService;
 import ua.logos.service.UserService;
+import ua.logos.service.utils.CustomFileUtils;
 
 import static ua.logos.mapper.UserMapper.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@SessionAttributes("usersList")
+@SessionAttributes(names= {"filterModel","beginIndex","endIndex","currentPage","usersPage","sizeModel","usersList"})
 public class HomeController {
 	
 	private MakeService makeService;
 	private ModelService modelService;
 	private UserService userService;
+	private UserInfoService userInfoService;
 	
 	
 	@Autowired
-	public HomeController(MakeService makeService, ModelService modelService, UserService userService) {
+	public HomeController(MakeService makeService, ModelService modelService, UserService userService, UserInfoService userInfoService ) {
 		this.makeService = makeService;
 		this.modelService = modelService;
 		this.userService = userService;
+		this.userInfoService = userInfoService;
 	}
 
 
@@ -142,15 +152,19 @@ public class HomeController {
 		
 		int currentPage = page.getNumber();
 		int begin = Math.max(1, currentPage - 5);
-		int end = Math.min(begin + 5, page.getNumber());
+		int end = Math.min(currentPage + 5, page.getNumber());
+		
+		SimpleFilter filter = new SimpleFilter();
+		filter.setSize(10);
 		
 		
-		model.addAttribute("filterModel", new SimpleFilter());
+		model.addAttribute("filterModel", filter);
 		model.addAttribute("beginIndex", begin);
 		model.addAttribute("endIndex", end);
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("usersList", page);
 		model.addAttribute("usersPage", page.getContent());
+		model.addAttribute("sizeModel", filter.getSize());
 		
 		return "one";
 	}
@@ -165,17 +179,52 @@ public class HomeController {
 		
 		int currentPage = page.getNumber();
 		int begin = Math.max(1, currentPage - 5);
-		int end = Math.min(begin + 5, page.getNumber());
+		int end = Math.min(currentPage + 5, page.getNumber());
 		if (filter.getSize().toString() == "") filter.setSize(10);
 		
-		model.addAttribute("filterModel", new SimpleFilter());
+		
+		model.addAttribute("filterModel", filter);
 		model.addAttribute("beginIndex", begin);
 		model.addAttribute("endIndex", end);
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("usersList", page);
 		model.addAttribute("usersPage", page.getContent());
+		model.addAttribute("sizeModel", filter.getSize());
+		
 		
 		return "one";
+	}
+	
+	@PostMapping("/one/filter")
+	public String addPhoto(@RequestParam("fileImage") MultipartFile file, @RequestParam("id") Integer id) throws IOException {
+		
+		User user = userService.getUserById(id);
+		
+		user.getUserInfo().setFileName(file.getOriginalFilename());
+		user.getUserInfo().setUserId(id);
+		userService.saveUser(user);
+		
+		CustomFileUtils.createImage("user_" + id , file);
+		return "redirect:/one";
+	}
+	
+	@GetMapping("/one/info/{userId}")
+	public String showInfo(Model model, @PathVariable("userId") int id) throws IOException {
+		
+		User user = userService.getUserById(id);
+		UserInfo info = user.getUserInfo();
+		
+		if(info.getFileName() == null) {
+			String encodeFile = CustomFileUtils.getImage("test", "default.png");
+			model.addAttribute("imgSrc", encodeFile);
+		} else {
+			String encodeFile = CustomFileUtils.getImage("user_" + id , info.getFileName());
+			model.addAttribute("imgSrc", encodeFile);
+		}
+		
+		model.addAttribute("usirModel", user);
+		
+		return "info";
 	}
 	
 //	@GetMapping("/one/filter")

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import ua.logos.dto.UserDtoForList;
 import ua.logos.dto.filter.SimpleFilter;
 import ua.logos.entity.User;
+import ua.logos.exception.UserNotFoundException;
 import ua.logos.repository.UserRepository;
 import ua.logos.service.UserService;
 
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User getUserById(Integer id) {
-		return userRepos.getOne(id);
+		return userRepos.findById(id).orElseThrow(()-> new UserNotFoundException("User with id = " + id + " not found"));
 	}
 
 	@Override

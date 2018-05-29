@@ -16,7 +16,9 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.ConfigurableApplicationContext;
 
 import ua.logos.entity.User;
+import ua.logos.entity.UserInfo;
 import ua.logos.repository.UserRepository;
+import ua.logos.service.utils.CustomFileUtils;
 
 @SpringBootApplication
 public class SpringBootProjectConsApplication extends SpringBootServletInitializer{
@@ -74,7 +76,7 @@ public class SpringBootProjectConsApplication extends SpringBootServletInitializ
 				System.out.println("Last names: " + lastCount);
 				System.out.println("Arrays with lasts: "  + lastNames.size());
 				
-				for(int i = 0; i< 2000; i++) {
+				for(int i = 0; i< 1000; i++) {
 					User user = new User();
 					user.setFirstName(firstNames.get(new Random().nextInt(firstCount - 1) + 1));
 					user.setLastName(lastNames.get(new Random().nextInt(lastCount - 1) + 1));
@@ -82,6 +84,8 @@ public class SpringBootProjectConsApplication extends SpringBootServletInitializ
 					user.setLogin(user.getFirstName() + user.getLastName() + Integer.toString(new Random().nextInt(100000)));
 					user.setPassword(Integer.toString(new Random().nextInt(1000))+ user.getLastName() + user.getFirstName() + Integer.toString(new Random().nextInt(1000)));
 					user.setSalary((new Random().nextInt(10)*1000) + (new Random().nextInt(10)*100) + (new Random().nextInt(10)*10));
+					user.setUserInfo(new UserInfo());
+					CustomFileUtils.createFolder("user_" + i);
 					userRepository.save(user);
 				} 
 				
